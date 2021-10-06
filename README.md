@@ -55,10 +55,21 @@ The main goal of the researchers was developing a highly efficient robust hashin
 ## Hash Comparison
 
 ### Step 1: Calculating the Hamming distance
-1. Bit by bit comparison of binary hashes
+1. Bit by bit comparison of the binary hashes
 
 ### Step 2: Performing a quantum hash comparison
 1. NOT WRITTEN YET
 
 ### Step 3: Combining both distance metrics
 1. NOT WRITTEN YET
+
+# Installation
+To build to program binaries, you have to have Rust installed. After that, you can just run
+
+    cargo build --release
+    
+in the top directory to generate the binaries for your OS inside the ./target/release/ directory.
+At the moment, the following binaries will be compiled:
+- forbild_create: Creating hashes for all images passed to the command line tool
+- forbild_compare: Calculating the hamming distance between all images specified by the search regex (**will be improved soon!**)
+
