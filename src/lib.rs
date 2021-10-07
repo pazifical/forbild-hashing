@@ -4,6 +4,7 @@ use image::GrayImage;
 pub mod editing;
 pub mod hashing;
 pub mod hashmath;
+mod hash;
 
 pub const SIZE: u32 = 16;
 
