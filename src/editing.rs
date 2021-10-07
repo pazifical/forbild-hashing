@@ -1,9 +1,21 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use image::io::Reader as ImageReader;
 use image::{DynamicImage, GrayImage, GenericImageView, ImageBuffer, Luma};
 use image::imageops::{Triangle, Gaussian, flip_vertical_in_place, flip_horizontal_in_place};
 use crate::SIZE;
 
+pub fn preprocess_image(path: &PathBuf) -> GrayImage {
+    let img = import_image_from_file(path);
+    let img = color_to_grayscale(img);
+    let img = downsample(img);
+    let img = grayscale_to_luma(img);
+    img
+}
+
+pub fn flip_image_by_brightest_pixel(img: &mut GrayImage) -> GrayImage {
+    let img = mirror_by_brightest_pixel(img);
+    img.to_owned()
+}
 
 pub fn import_image_from_file(path: &Path) -> DynamicImage {
     let img_reader = match ImageReader::open(path) {
