@@ -1,8 +1,6 @@
 use std::path::PathBuf;
-use image::GrayImage;
-use crate::{step1_preprocess_image, step2_flip_image_by_brightest_pixel, step3_create_binary_hash};
-use crate::editing::*;
-use crate::hashing::*;
+use crate::editing::{preprocess_image, flip_image_by_brightest_pixel};
+use crate::hashing::{create_binary_hash};
 
 pub struct Hash {
     grayimage256: [u8; 256],
@@ -17,10 +15,10 @@ impl Hash {
         }
     }
 
-    pub fn from_path(&self, path: PathBuf) -> Hash {
+    pub fn from_path(path: &PathBuf) -> Hash {
         // Processing raw image
-        let mut img = self.preprocess_image(path);
-        let img = self.flip_image_by_brightest_pixel(&mut img);
+        let mut img = preprocess_image(path);
+        let img = flip_image_by_brightest_pixel(&mut img);
 
         // Saving grayscale image to array (necessary for weighted distance calculation)
         let mut gray = [0; 256];
@@ -29,7 +27,7 @@ impl Hash {
         }
 
         // Calculating Hash from grayscale image
-        let hash = self.create_binary_hash(img);
+        let hash = create_binary_hash(img);
 
         Hash {
             grayimage256: gray,
@@ -37,21 +35,56 @@ impl Hash {
         }
     }
 
-    fn preprocess_image(&self, path: PathBuf) -> GrayImage {
-        let img = import_image_from_file(&path);
-        let img = color_to_grayscale(img);
-        let img = downsample(img);
-        let img = grayscale_to_luma(img);
-        img
+    pub fn binary256_to_string(&self) -> String {
+        self.binary256
+            .iter()
+            .map(|b| b.to_string())
+            .collect()
     }
 
-    fn flip_image_by_brightest_pixel(&self, img: &mut GrayImage) -> GrayImage {
-        let img = mirror_by_brightest_pixel(img);
-        img.to_owned()
+    pub fn hamming_distance(&self, other: &Hash) -> usize {
+        let mut dist = 0;
+        for (bit1, bit2) in self.binary256.iter().zip(&other.binary256) {
+            if *bit1 != *bit2 {
+                dist += 1;
+            }
+        }
+        dist
     }
 
-    fn create_binary_hash(&self, img: GrayImage) -> [u8; 256] {
-        let img = to_binary_image_by_quadrant(img);
-        image_to_binary_hash(img)
+    // TODO: Implement weighted distance calculation
+    pub fn weighted_distance(&self, other: &Hash) -> usize {
+        // Get same and different indices of both hashes
+        let mut same_indices = Vec::new();
+        let mut diff_indices = Vec::new();
+        let mut i = 0;
+        for (bit1, bit2) in self.binary256.iter().zip(&other.binary256) {
+            if *bit1 == *bit2 {
+                same_indices.push(i);
+            } else {
+                diff_indices.push(i);
+            }
+            i += 1;
+        }
+
+        // Calculate variance
+        let medians = self.calc_subarea_medians();
+        let mut var_same = 0.0;
+        let mut var_diff = 0.0;
+        // TODO: Implement!
+        for i in same_indices {
+            var_same += 1;
+        }
+        for i in diff_indices {
+            var_diff += 1;
+        }
+
+        var_same / var_diff * self.hamming_distance(&other) * 1000
     }
+
+    // TODO: Implement!
+    fn calc_subarea_medians(&self) -> [f32; 4] {
+        [10.; 4]
+    }
+
 }

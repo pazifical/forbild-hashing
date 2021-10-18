@@ -4,6 +4,11 @@ use crate::SIZE;
 
 const HASHLEN: usize = (SIZE*SIZE) as usize;
 
+pub fn create_binary_hash(img: GrayImage) -> [u8; 256] {
+    let img = to_binary_image_by_quadrant(img);
+    image_to_binary_hash(img)
+}
+
 pub fn image_to_binary_hash_by_median(img: GrayImage) -> [u8; HASHLEN] {
     let img = to_binary_image_by_quadrant(img);
     image_to_binary_hash(img)
@@ -26,11 +31,7 @@ pub fn image_to_hex_hash(img: GrayImage) -> [char; HASHLEN/4] {
     binary_hash_to_hex_hash(&hash)
 }
 
-pub fn binary_hash_to_string(hash: &[u8; HASHLEN]) -> String {
-    hash.iter()
-        .map(|b| b.to_string())
-        .collect()
-}
+
 
 pub fn binary_hash_to_hex_hash(binary_hash: &[u8; HASHLEN]) -> [char; HASHLEN/4] {
     let mut hex_hash: [char; HASHLEN/4] = ['0'; HASHLEN/4];
@@ -60,7 +61,6 @@ pub fn binary_hash_to_hex_hash(binary_hash: &[u8; HASHLEN]) -> [char; HASHLEN/4]
            hex_hash[i] = hexval.unwrap();
         } else {
             eprintln!("ERROR: A part of the binary hash cannot be converted to hexadecimal.");
-            eprintln!("{}", binary_hash_to_string(&binary_hash));
             std::process::exit(1);
         }
     }
@@ -94,6 +94,12 @@ pub fn hex_hash_to_string(hash: &[char; HASHLEN/4]) -> String {
         .map(|c| c.to_string())
         .collect::<Vec<String>>()
         .concat()
+}
+
+pub fn binary_hash_to_string(hash: &[u8; HASHLEN]) -> String {
+    hash.iter()
+        .map(|b| b.to_string())
+        .collect()
 }
 
 #[cfg(test)]
