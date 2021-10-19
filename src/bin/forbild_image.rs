@@ -21,7 +21,7 @@ fn main() {
         img.save(std::env::current_dir()
             .unwrap()
             .join(format!("{}.jpg", i)))
-            .expect("cant wwrite");
+            .expect("cant write");
         i = i + 1;
     }
 }

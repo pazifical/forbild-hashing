@@ -6,7 +6,7 @@ use crate::SIZE;
 
 const HASHLEN: usize = (SIZE*SIZE) as usize;
 
-
+#[derive(Clone, Copy)]
 pub struct Hash {
     pub grayimage256: [u8; HASHLEN],
     pub binary256: [u8; HASHLEN],
@@ -51,7 +51,7 @@ impl Hash {
         }
     } 
 
-    fn get_subarea(&self, i: usize) -> SubArea {
+    pub fn get_subarea(&self, i: usize) -> SubArea {
         // Subarea top and bottom left
         if (i as u32)%SIZE < SIZE/2 {
             // Subarea top left
@@ -119,16 +119,58 @@ impl Hash {
         }
     }
 
-    pub fn binary256_to_string(&self) -> String {
+    pub fn to_string(&self) -> String {
         self.binary256
             .iter()
             .map(|b| b.to_string())
             .collect()
     }
+
+    pub fn to_hex(&self) -> [char; HASHLEN/4] {
+        let mut hex_hash: [char; HASHLEN/4] = ['0'; HASHLEN/4];
+
+        for i in 0..(HASHLEN/4) {
+            let hexval = match self.binary256[(4*i)..(4*i+4)] {
+                [0, 0, 0, 0] => Some('0'),
+                [0, 0, 0, 1] => Some('1'),
+                [0, 0, 1, 0] => Some('2'),
+                [0, 0, 1, 1] => Some('3'),
+                [0, 1, 0 ,0] => Some('4'),
+                [0, 1, 0, 1] => Some('5'),
+                [0, 1, 1, 0] => Some('6'),
+                [0, 1, 1, 1] => Some('7'),
+                [1, 0, 0, 0] => Some('8'),
+                [1, 0, 0, 1] => Some('9'),
+                [1, 0, 1, 0] => Some('A'),
+                [1, 0, 1, 1] => Some('B'),
+                [1, 1, 0, 0] => Some('C'),
+                [1, 1, 0, 1] => Some('D'),
+                [1, 1, 1, 0] => Some('E'),
+                [1, 1, 1, 1] => Some('F'),
+                _ => None
+            };
+
+            if hexval.is_some() {
+            hex_hash[i] = hexval.unwrap();
+            } else {
+                eprintln!("ERROR: A part of the binary hash cannot be converted to hexadecimal.");
+                std::process::exit(1);
+            }
+        }
+        hex_hash
+    }
+
+    pub fn to_string_hex(&self) -> String {
+        let hash = self.to_hex();
+        hash.iter()
+            .map(|c| c.to_string())
+            .collect::<Vec<String>>()
+            .concat()
+    }
 }
 
 
-enum SubArea {
+pub enum SubArea {
     TopLeft,
     TopRight,
     BottomLeft,
