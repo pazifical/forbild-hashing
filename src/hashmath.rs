@@ -70,7 +70,7 @@ pub fn weighted_distance(hash1: &Hash, hash2: &Hash) -> f64 {
     // Calculate variance
     let mut var_same = 0.0;
     let mut var_diff = 0.0;
-    // TODO: Implement!
+
     for (i, value) in hash1.grayimage256.iter().enumerate() {
         let median = match hash1.get_subarea(i) {
             SubArea::TopLeft => hash1.subarea_medians[0][0],
@@ -93,8 +93,6 @@ pub fn weighted_distance(hash1: &Hash, hash2: &Hash) -> f64 {
 
     var_same /= identical_count as f64;
     var_diff /= (HASHLEN - identical_count) as f64;
-
-    // println!("var_same: {}, var_diff: {}", var_same, var_diff);
 
     var_diff / var_same * 1000.0 * (hamming_distance(hash1, hash2) as f64)
 }
