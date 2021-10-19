@@ -1,5 +1,6 @@
 use crate::hashing::hex_to_binary;
 use crate::SIZE;
+use crate::hash::Hash;
 
 const HASHLEN: usize = (SIZE*SIZE) as usize;
 
@@ -38,6 +39,46 @@ pub fn hamming_distance_hex_hash(
         }
     }
     hashdist
+}
+
+
+pub fn hamming_distance(hash1: &Hash, hash2: &Hash) -> usize {
+    let mut dist = 0;
+    for (bit1, bit2) in hash1.binary256.iter().zip(&hash2.binary256) {
+        if *bit1 != *bit2 {
+            dist += 1;
+        }
+    }
+    dist
+}
+
+// TODO: Implement weighted distance calculation
+pub fn weighted_distance(hash1: &Hash, hash2: &Hash) -> usize {
+    // Get same and different indices of both hashes
+    let mut same_indices = Vec::new();
+    let mut diff_indices = Vec::new();
+    let mut i = 0;
+    for (bit1, bit2) in hash1.binary256.iter().zip(&hash2.binary256) {
+        if *bit1 == *bit2 {
+            same_indices.push(i);
+        } else {
+            diff_indices.push(i);
+        }
+        i += 1;
+    }
+
+    // Calculate variance
+    let mut var_same = 0.0;
+    let mut var_diff = 0.0;
+    // TODO: Implement!
+    for i in same_indices {
+        var_same += 1.;
+    }
+    for i in diff_indices {
+        var_diff += 1.;
+    }
+
+    ((var_same / var_diff * 1000.0) as usize) * hamming_distance(hash1, hash2)
 }
 
 
