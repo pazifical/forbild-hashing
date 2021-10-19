@@ -1,5 +1,5 @@
 use forbild_hashing::hashmath::*;
-use forbild_hashing::{parse_args_to_paths, step1_preprocess_image, step2_flip_image_by_brightest_pixel, step3_create_binary_hash};
+use forbild_hashing::hash::Hash;
 use forbild_hashing::SIZE;
 
 fn main() {
@@ -23,9 +23,7 @@ fn main() {
     // Creating hashes for all valid photos
     let mut hashs = Vec::new();
     for path in &paths {
-        let mut img = step1_preprocess_image(path.to_owned());
-        let img = step2_flip_image_by_brightest_pixel(&mut img);
-        let hash = step3_create_binary_hash(img);
+        let hash = Hash::from_path(path);
         hashs.push(hash);
     }
 
@@ -37,7 +35,7 @@ fn main() {
             println!("{};{};{}",
                      paths[i].to_str().unwrap(),
                      paths[j].to_str().unwrap(),
-                     hamming_distance_binary_hash(&hashs[i], &hashs[j])
+                     hamming_distance(&hashs[i], &hashs[j])
             );
         }
     }

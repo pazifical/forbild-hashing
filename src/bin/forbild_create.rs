@@ -6,6 +6,6 @@ fn main() {
 
     for path in &paths {
         let hash = Hash::from_path(path);
-        println!("{};{}", path.to_str().unwrap(), hash.binary256_to_string());
+        println!("{};{}", path.to_str().unwrap(), hash.to_string());
     }
 }
