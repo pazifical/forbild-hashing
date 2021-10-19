@@ -94,9 +94,9 @@ pub fn weighted_distance(hash1: &Hash, hash2: &Hash) -> f64 {
     var_same /= identical_count as f64;
     var_diff /= (HASHLEN - identical_count) as f64;
 
-    println!("var_same: {}, var_diff: {}", var_same, var_diff);
+    // println!("var_same: {}, var_diff: {}", var_same, var_diff);
 
-    var_same / var_diff * 1000.0 * (hamming_distance(hash1, hash2) as f64)
+    var_diff / var_same * 1000.0 * (hamming_distance(hash1, hash2) as f64)
 }
 
 
