@@ -79,7 +79,7 @@ pub fn weighted_distance(hash1: &Hash, hash2: &Hash) -> f64 {
             SubArea::BottomRight => hash1.subarea_medians[1][1],
         };
 
-        let diff = ((median as i32) - (*value as i32)).abs() as f64;
+        let diff = ((median as i32) - (*value as i32)).pow(2) as f64;
 
         match is_hashbit_identical[i] {
             true => { 
