@@ -12,11 +12,6 @@ pub fn preprocess_image(path: &PathBuf) -> GrayImage {
     img
 }
 
-pub fn flip_image_by_brightest_pixel(img: &mut GrayImage) -> GrayImage {
-    let img = mirror_by_brightest_pixel(img);
-    img.to_owned()
-}
-
 pub fn import_image_from_file(path: &Path) -> DynamicImage {
     let img_reader = match ImageReader::open(path) {
         Ok(reader) => reader,
@@ -133,7 +128,24 @@ pub fn to_binary_image_by_quadrant(img: GrayImage) -> GrayImage {
 
 #[cfg(test)]
 mod editing_tests {
+    use image::Rgba;
     use super::*;
+
+    fn create_dynamicimage() -> DynamicImage {
+        let mut img = ImageBuffer::from_pixel(
+            16,
+            16,
+            Rgba([255; 4])
+        );
+
+        for (x, y, pix) in img.enumerate_pixels_mut() {
+            pix[0] = (x + y) as u8;
+            pix[1] = (x + y) as u8;
+            pix[2] = (x + y) as u8;
+        }
+
+       DynamicImage::ImageRgba8(img)
+    }
 
     fn create_grayimage() -> GrayImage {
         let mut img: ImageBuffer<Luma<u8> , Vec<u8>> = ImageBuffer::new(16, 16);
@@ -143,6 +155,29 @@ mod editing_tests {
         }
 
         GrayImage::from(img)
+    }
+
+    fn rgb_to_luma(r: u8, g: u8, b: u8) -> u8 {
+        (0.299*(r as f32) + 0.587*(g as f32) + 0.114*(g as f32)) as u8
+    }
+
+    #[test]
+    fn test_color_to_grayscale() {
+        let img = create_dynamicimage();
+
+        let img = color_to_grayscale(img);
+
+        let pix = img.get_pixel(10, 10);
+        assert_eq!(rgb_to_luma(pix[0], pix[1], pix[2]), 20);
+    }
+
+    #[test]
+    fn test_grayscale_to_luma() {
+        let img = create_dynamicimage();
+        let img = color_to_grayscale(img);
+
+        let img = grayscale_to_luma(img);
+        assert_eq!(img.get_pixel(10, 10)[0], 20);
     }
 
     #[test]
@@ -171,4 +206,49 @@ mod editing_tests {
         assert_eq!(img.get_pixel(0, 0)[0], 15+15);
     }
 
+    #[test]
+    fn test_to_binary_image() {
+        let mut img = create_grayimage();
+
+        let img = to_binary_image_by_quadrant(img);
+
+        assert_eq!(img.get_pixel(0, 0)[0], 0);
+        assert_eq!(img.get_pixel(3, 0)[0], 0);
+        assert_eq!(img.get_pixel(7, 7)[0], 255);
+
+        assert_eq!(img.get_pixel(8, 8)[0], 0);
+        assert_eq!(img.get_pixel(15, 15)[0], 255);
+    }
+
+    #[test]
+    fn test_import_image() {
+        let path = PathBuf::from("./data/original/2017_China_Chongqing_Boats.jpg");
+        let img = import_image_from_file(&path);
+
+        let pix = img.get_pixel(0, 0);
+        assert_eq!(pix[0], 12);
+        assert_eq!(pix[1], 11);
+        assert_eq!(pix[2], 42);
+    }
+
+    #[test]
+    fn test_downsample() {
+        let path = PathBuf::from("./data/original/2017_China_Chongqing_Boats.jpg");
+        let img = import_image_from_file(&path);
+        let img = downsample(img);
+
+        let pix = img.get_pixel(0, 0);
+        assert_eq!(pix[0], 39);
+        assert_eq!(pix[1], 41);
+        assert_eq!(pix[2], 70);
+    }
+
+    #[test]
+    fn test_preprocess_image() {
+        let path = PathBuf::from("./data/original/2017_China_Chongqing_Boats.jpg");
+        let img = preprocess_image(&path);
+
+        let pix = img.get_pixel(0, 0);
+        assert_eq!(pix[0], 42);
+    }
 }

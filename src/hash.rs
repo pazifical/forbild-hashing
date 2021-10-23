@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use image::GrayImage;
 
-use crate::editing::{preprocess_image, flip_image_by_brightest_pixel};
+use crate::editing::{preprocess_image, mirror_by_brightest_pixel};
 use crate::SIZE;
 
 const HASHLEN: usize = (SIZE*SIZE) as usize;
@@ -25,9 +25,9 @@ impl Hash {
     pub fn from_path(path: &PathBuf) -> Hash {
         // Processing raw image
         let mut img = preprocess_image(path);
-        let img = flip_image_by_brightest_pixel(&mut img);
+        let img = mirror_by_brightest_pixel(&mut img);
 
-        Hash::from_grayimage(img)
+        Hash::from_grayimage(img.to_owned())
     }
 
     pub fn from_grayimage(img: GrayImage) -> Hash {
