@@ -11,16 +11,16 @@ fn main() {
     let img = import_image_from_file(&path);
 
     let img = color_to_grayscale(img);
-    img.save("./data/original/out/1_gray.jpg").unwrap();
+    img.save("./data/original/out/01_gray.jpg").unwrap();
 
     let img = downsample(img);
-    img.resize(100, 100, FilterType::Nearest).save("./data/original/out/2_downsampled.jpg").unwrap();
+    img.resize(100, 100, FilterType::Nearest).save("./data/original/out/02_downsampled.jpg").unwrap();
 
     let mut img = grayscale_to_luma(img);
 
     let img = mirror_by_brightest_pixel(&mut img);
-    DynamicImage::ImageLuma8(img.clone()).resize(100, 100, FilterType::Nearest).save("./data/original/out/3_flipped.jpg").unwrap();
+    DynamicImage::ImageLuma8(img.clone()).resize(100, 100, FilterType::Nearest).save("./data/original/out/03_flipped.jpg").unwrap();
 
     let img = to_binary_image_by_quadrant(img.to_owned());
-    DynamicImage::ImageLuma8(img).resize(100, 100, FilterType::Nearest).save("./data/original/out/4_binary.jpg").unwrap();
+    DynamicImage::ImageLuma8(img).resize(100, 100, FilterType::Nearest).save("./data/original/out/04_binary.jpg").unwrap();
 }
