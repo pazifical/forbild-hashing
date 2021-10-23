@@ -41,27 +41,46 @@ The main goal of the researchers was developing a highly efficient robust hashin
 ## Hash Calculation
 
 ### Step 1: Image preprocessing
-1. Convert to grayscale
-2. Downsample to 16x16 pixels
+- Converting to grayscale by using the standard luma formula
+- Downsampling to 16x16 pixels using Gaussian filter
 
 ### Step 2: Image processing
-1. Automatic mirroring
+- Dividing into four subareas with 8x8 pixels each
+- Automatic mirroring, so that the subarea with the brightest pixel is in the top left
 
 ### Step 3: Hash calculation
-1. Divide into four subareas (each 8x8 pixels)
-2. Change pixel value to 0 or 1 depending on the mean value
-3. Create binary hash from binary image
+- Changing pixel value to 0 or 1 depending on its subareas mean value
+- Creating binary hash row by row
+- Converting binary hash to hex hash
 
 ## Hash Comparison
 
 ### Step 1: Calculating the Hamming distance
-1. Bit by bit comparison of the binary hashes
+- Summing up the difference between each hashes' bit
+- Hamming distance <= 8: The images are said to be the same
+- Hamming distance > 8: Go to step 2
 
-### Step 2: Performing a quantum hash comparison
-1. NOT WRITTEN YET
+### Step 2: Calculating the Weighted distance
+- Comparing both hashes bit by bit to find out the position of the different bits
+- Calculating the weighted distance (explained further below)
+- Weighted distance <= 16: The images are said to be the same
 
-### Step 3: Combining both distance metrics
-1. NOT WRITTEN YET
+
+### Formula to calculate the Weighted distance
+WD(H<sub>1</sub>, H<sub>2</sub>) = Var(D<sub>1</sub>) / Var(S<sub>1</sub>) * HD(H<sub>1</sub>, H<sub>2</sub>) * 1000 <br>
+<sub>
+WD: Weighted distance<br>
+HD: Hamming distance<br>
+Var(D<sub>1</sub>) = Variance of different hashbits<br>
+Var(S<sub>1</sub>) = Variance of similar hashbits<br>
+</sub><br>
+The calculation of the variance goes as follows:<br>
+Var(D<sub>1</sub>) = &sum;<sup>n</sup><sub>i=0</sub> [ P<sub>i</sub> - µ(P<sub>i</sub>) ]<sup>2</sup> <sub>where the hashbit i differs</sub><br>
+<sub>
+P<sub>i</sub>: Grayscale value of pixel i <br>
+µ(P<sub>i</sub>): Median of pixel i's subarea
+</sub>
+
 
 # Installation
 To build to program binaries, you have to have Rust installed. After that, you can just run
