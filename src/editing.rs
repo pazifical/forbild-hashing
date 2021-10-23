@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 use image::io::Reader as ImageReader;
 use image::{DynamicImage, GrayImage, GenericImageView, ImageBuffer, Luma};
-use image::imageops::{Triangle, Gaussian, flip_vertical_in_place, flip_horizontal_in_place};
+use image::imageops::{Gaussian, flip_vertical_in_place, flip_horizontal_in_place};
 use crate::SIZE;
 
 pub fn preprocess_image(path: &PathBuf) -> GrayImage {
@@ -129,4 +129,45 @@ pub fn to_binary_image_by_quadrant(img: GrayImage) -> GrayImage {
         }
     }
     GrayImage::from(img_out)
+}
+
+#[cfg(test)]
+mod editing_tests {
+    use super::*;
+
+    fn create_grayimage() -> GrayImage {
+        let mut img: ImageBuffer<Luma<u8> , Vec<u8>> = ImageBuffer::new(16, 16);
+
+        for (x, y, pix) in img.enumerate_pixels_mut() {
+            pix[0] = (x + y) as u8;
+        }
+
+        GrayImage::from(img)
+    }
+
+    #[test]
+    fn test_brightest_pixel_of_quadrant() {
+        let img = create_grayimage();
+
+        let bright = brightest_pixel_of_quadrant(&img, 0, 0);
+        assert_eq!(bright, 7+7);
+
+        let bright = brightest_pixel_of_quadrant(&img, 1, 0);
+        assert_eq!(bright, 7+15);
+
+        let bright = brightest_pixel_of_quadrant(&img, 0, 1);
+        assert_eq!(bright, 7+15);
+
+        let bright = brightest_pixel_of_quadrant(&img, 1, 1);
+        assert_eq!(bright, 15+15);
+    }
+
+    #[test]
+    fn test_mirror_by_brightest_pixel() {
+        let mut img = create_grayimage();
+
+        let img = mirror_by_brightest_pixel(&mut img);
+
+        assert_eq!(img.get_pixel(0, 0)[0], 15+15);
+    }
 }

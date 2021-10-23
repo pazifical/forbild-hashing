@@ -2,7 +2,6 @@ use std::path::PathBuf;
 use std::time::Instant;
 use forbild_hashing::hashmath::*;
 use forbild_hashing::hash::Hash;
-use forbild_hashing::SIZE;
 
 
 fn main() {

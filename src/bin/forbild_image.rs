@@ -1,20 +1,17 @@
-use std::path::PathBuf;
-use image::GenericImageView;
-use forbild_hashing::editing::*;
-use forbild_hashing::hashing::*;
-use forbild_hashing::{parse_args_to_paths, step1_preprocess_image, step2_flip_image_by_brightest_pixel, step3_create_binary_hash};
-use forbild_hashing::SIZE;
+use forbild_hashing::{editing, parse_args_to_paths};
+use forbild_hashing::editing::to_binary_image_by_quadrant;
 
 fn main() {
     let paths = parse_args_to_paths();
 
     let mut i = 0;
     for path in &paths {
-        let mut img = step1_preprocess_image(path.to_owned());
-
-        let img = step2_flip_image_by_brightest_pixel(&mut img);
-
-        let img = to_binary_image_by_quadrant(img);
+        let img = editing::import_image_from_file(&path);
+        let img = editing::color_to_grayscale(img);
+        let img = editing::downsample(img);
+        let mut img = editing::grayscale_to_luma(img);
+        let img = editing::mirror_by_brightest_pixel(&mut img);
+        let img = to_binary_image_by_quadrant(img.to_owned());
 
         println!("{}: {}", i, path.to_str().unwrap());
 

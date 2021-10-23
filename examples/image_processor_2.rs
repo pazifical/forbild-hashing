@@ -1,8 +1,5 @@
 use std::path::PathBuf;
-use image::GenericImageView;
-use forbild_hashing::editing::*;
 use forbild_hashing::hash::Hash;
-use forbild_hashing::SIZE;
 
 fn main() {
     println!("Running example...");

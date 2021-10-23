@@ -101,7 +101,6 @@ pub fn weighted_distance(hash1: &Hash, hash2: &Hash) -> f64 {
 #[cfg(test)]
 mod hashmath_tests {
     use crate::hashmath::*;
-    use image::ImageBuffer;
 
     fn create_testing_binary_hash() -> [u8; 256] {
         let hash = [
