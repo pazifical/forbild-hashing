@@ -44,11 +44,7 @@ The main goal of the researchers was developing a highly efficient robust hashin
 
 ## Hash Calculation
 
-<img src="./data/original/2015_Japan_Tokyo_Traffic.jpg">
-<img src="./data/original/out/1_gray.jpg">
-<img src="./data/original/out/2_downsampled.jpg">
-<img src="./data/original/out/3_flipped.jpg">
-<img src="./data/original/out/4_binary.jpg">
+<img src="./data/original/2015_Japan_Tokyo_Traffic.jpg" style="height:100px;width:auto"> <img src="./data/original/out/1_gray.jpg" style="height:100px;width:auto"> <img src="./data/original/out/2_downsampled.jpg" style="height:100px;width:auto"> <img src="./data/original/out/3_flipped.jpg" style="height:100px;width:auto"> <img src="./data/original/out/4_binary.jpg" style="height:100px;width:auto">
 
 ### Step 1: Image preprocessing
 - Converting to grayscale by using the standard luma formula
@@ -57,6 +53,7 @@ The main goal of the researchers was developing a highly efficient robust hashin
 ### Step 2: Image processing
 - Dividing into four subareas with 8x8 pixels each
 - Automatic mirroring, so that the subarea with the brightest pixel is in the top left
+
 
 ### Step 3: Hash calculation
 - Changing pixel value to 0 or 1 depending on its subareas mean value
