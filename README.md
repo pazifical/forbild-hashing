@@ -44,6 +44,12 @@ The main goal of the researchers was developing a highly efficient robust hashin
 
 ## Hash Calculation
 
+<img src="./data/original/2015_Japan_Tokyo_Traffic.jpg">
+<img src="./data/original/out/1.jpg">
+<img src="./data/original/out/2.jpg">
+<img src="./data/original/out/3.jpg">
+<img src="./data/original/out/4.jpg">
+
 ### Step 1: Image preprocessing
 - Converting to grayscale by using the standard luma formula
 - Downsampling to 16x16 pixels using Gaussian filter
