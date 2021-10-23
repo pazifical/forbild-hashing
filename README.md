@@ -1,4 +1,8 @@
 # ForBild: Efficient robust image hashing
+[![Build Status](https://app.travis-ci.com/TwoWaySix/forbild-hashing.svg?branch=main)](https://app.travis-ci.com/TwoWaySix/forbild-hashing)
+[![codecov](https://codecov.io/gh/TwoWaySix/forbild-hashing/branch/main/graph/badge.svg?token=2MZCDM1QPQ)](https://codecov.io/gh/TwoWaySix/forbild-hashing)
+[![GitHub release](https://img.shields.io/github/release/TwoWaySix/forbild-hashing.svg)](https://GitHub.com/TwoWaySix/forbild-hashing/releases/)
+
 A library and command line tool implementation of ForBild written in Rust :crab:. ForBild stands for **For**ensische **Bild**erkennung (german): Forensic image recognition.
 
 **ForBild** is an ***efficient robust image hashing algorithm*** developed at the **Fraunhofer Institute** ad inspried by the **Block Hash** algorithm. It is developed and distributed by Martin Steinebach, Huajian Liu and York Yannikos as a closed source command line tool. The concept of the algorithm is publicly available though.
