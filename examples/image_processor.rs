@@ -1,6 +1,5 @@
 use std::path::PathBuf;
 use forbild_hashing::editing::*;
-use forbild_hashing::hashing::*;
 
 fn main() {
     println!("Running example...");
@@ -23,11 +22,4 @@ fn main() {
 
     let img = to_binary_image_by_quadrant(img.to_owned());
     img.save("./data/original/temp/5.jpg").unwrap();
-
-    let hash = image_to_binary_hash(img.to_owned());
-    println!("{}", binary_hash_to_string(&hash));
-
-    let hash = binary_hash_to_hex_hash(&hash);
-    println!("{}", hex_hash_to_string(&hash));
-
 }

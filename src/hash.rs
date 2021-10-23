@@ -2,6 +2,7 @@ use std::path::PathBuf;
 use image::GrayImage;
 
 use crate::editing::{preprocess_image, mirror_by_brightest_pixel};
+use crate::hashmath::hex_to_binary;
 use crate::SIZE;
 
 const HASHLEN: usize = (SIZE*SIZE) as usize;
@@ -42,6 +43,21 @@ impl Hash {
         // Calculating Hash from grayscale image
         hash.set_binary_hash_from_grayimage();
 
+        hash
+    }
+
+    pub fn from_hexhash(hexhash: &[char; HASHLEN/4]) -> Hash {
+        let mut binaryhash = [0; HASHLEN];
+
+        for (i, hexval) in hexhash.iter().enumerate() {
+            let binaries = hex_to_binary(hexval).unwrap();
+            for (j, b) in binaries.iter().enumerate() {
+                binaryhash[i+j] = *b;
+            }
+        }
+
+        let mut hash = Hash::new();
+        hash.binary256 = binaryhash;
         hash
     }
 

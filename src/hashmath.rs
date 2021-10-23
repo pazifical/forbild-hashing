@@ -1,4 +1,3 @@
-use crate::hashing::hex_to_binary;
 use crate::SIZE;
 use crate::hash::{Hash, SubArea};
 
@@ -95,6 +94,28 @@ pub fn weighted_distance(hash1: &Hash, hash2: &Hash) -> f64 {
     var_diff /= (HASHLEN - identical_count) as f64;
 
     var_diff / var_same * 1000.0 * (hamming_distance(hash1, hash2) as f64)
+}
+
+pub fn hex_to_binary(hex: &char) -> Option<[u8; 4]> {
+    match hex {
+        '0' => Some([0, 0, 0, 0]),
+        '1' => Some([0, 0, 0, 1]),
+        '2' => Some([0, 0, 1, 0]),
+        '3' => Some([0, 0, 1, 1]),
+        '4' => Some([0, 1, 0, 0]),
+        '5' => Some([0, 1, 0, 1]),
+        '6' => Some([0, 1, 1, 0]),
+        '7' => Some([0, 1, 1, 1]),
+        '8' => Some([1, 0, 0, 0]),
+        '9' => Some([1, 0, 0, 1]),
+        'A' => Some([1, 0, 1, 0]),
+        'B' => Some([1, 0, 1, 1]),
+        'C' => Some([1, 1, 0, 0]),
+        'D' => Some([1, 1, 0, 1]),
+        'E' => Some([1, 1, 1, 0]),
+        'F' => Some([1, 1, 1, 1]),
+        _ => None
+    }
 }
 
 

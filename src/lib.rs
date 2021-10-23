@@ -1,7 +1,6 @@
 use std::path::PathBuf;
 
 pub mod editing;
-pub mod hashing;
 pub mod hashmath;
 pub mod hash;
 
