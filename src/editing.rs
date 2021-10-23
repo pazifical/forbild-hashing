@@ -170,4 +170,5 @@ mod editing_tests {
 
         assert_eq!(img.get_pixel(0, 0)[0], 15+15);
     }
+
 }
