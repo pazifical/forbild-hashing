@@ -158,7 +158,7 @@ mod editing_tests {
     }
 
     fn rgb_to_luma(r: u8, g: u8, b: u8) -> u8 {
-        (0.299*(r as f32) + 0.587*(g as f32) + 0.114*(g as f32)) as u8
+        (0.299*(r as f32) + 0.587*(g as f32) + 0.114*(b as f32)) as u8
     }
 
     #[test]
@@ -208,7 +208,7 @@ mod editing_tests {
 
     #[test]
     fn test_to_binary_image() {
-        let mut img = create_grayimage();
+        let img = create_grayimage();
 
         let img = to_binary_image_by_quadrant(img);
 
