@@ -1,6 +1,8 @@
+use std::fs::File;
+use std::io::BufReader;
 use std::path::{Path, PathBuf};
-use image::io::Reader as ImageReader;
-use image::{DynamicImage, GrayImage, GenericImageView, ImageBuffer, Luma};
+use image::io::{Reader as ImageReader, Reader};
+use image::{DynamicImage, GrayImage, GenericImageView, ImageBuffer, Luma, ImageError};
 use image::imageops::{Gaussian, flip_vertical_in_place, flip_horizontal_in_place};
 use crate::SIZE;
 

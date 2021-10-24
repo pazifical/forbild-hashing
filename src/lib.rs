@@ -7,21 +7,20 @@ pub mod hash;
 pub const SIZE: u32 = 16;
 
 pub fn parse_args_to_paths() -> Vec<PathBuf> {
-    let args = get_args();
+    let args = std::env::args().skip(1).collect();
 
-    let paths = parse_args(args);
-
-    paths
+    match parse_args(args) {
+        Some(p) => p,
+        None => {
+            eprintln!("ERROR: No image paths were given. Exiting program.");
+            std::process::exit(1);
+        }
+    }
 }
 
-fn get_args() -> Vec<String> {
-    std::env::args().skip(1).collect()
-}
-
-fn parse_args(args: Vec<String>) -> Vec<PathBuf> {
+fn parse_args(args: Vec<String>) -> Option<Vec<PathBuf>> {
     if args.len() == 0 {
-        eprintln!("ERROR: No image paths were given. Exiting program.");
-        std::process::exit(1);
+       return None;
     }
 
     // Converting arguments to Paths and checking their validity
@@ -35,7 +34,7 @@ fn parse_args(args: Vec<String>) -> Vec<PathBuf> {
             eprintln!("         File will be skipped.");
         }
     }
-    paths
+    Some(paths)
 }
 
 #[cfg(test)]
@@ -43,7 +42,23 @@ mod lib_testing {
     use super::*;
 
     #[test]
-    fn test_arg_parsing_success() {
+    fn test_parse_args_success() {
+        let args = vec![
+            "data/original/2017_China_Chongqing_Boats.jpg".to_string(),
+            "data/original/NoImageToBeFoundHere.jpg".to_string(),
+        ];
 
+        let option = parse_args(args.clone()).unwrap();
+
+        assert_eq!(option.len(), 1);
+        assert_eq!(option[0].to_str().unwrap(), args[0]);
+    }
+
+    #[test]
+    fn test_parse_args_failure() {
+        assert_eq!(
+            parse_args(Vec::new()).is_none(),
+            true
+        );
     }
 }
