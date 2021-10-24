@@ -92,7 +92,7 @@ impl Hash {
         }
     }
 
-    fn set_subarea_medians(&mut self) {
+    pub fn set_subarea_medians(&mut self) {
         let mut top_left = Vec::with_capacity(64);
         let mut top_right = Vec::with_capacity(64);
         let mut bot_left = Vec::with_capacity(64);
@@ -120,7 +120,7 @@ impl Hash {
         self.subarea_medians[1][1] = bot_right[32];
     }
 
-    fn set_binary_hash_from_grayimage(&mut self) {
+    pub fn set_binary_hash_from_grayimage(&mut self) {
         for (i, val) in self.grayimage256.iter().enumerate() {
             let median = match self.get_subarea(i) {
                 SubArea::TopLeft => self.subarea_medians[0][0],

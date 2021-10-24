@@ -3,44 +3,6 @@ use crate::hash::{Hash, SubArea};
 
 const HASHLEN: usize = (SIZE*SIZE) as usize;
 
-pub fn hamming_distance_binary_hash(
-    hash1: &[u8; HASHLEN],
-    hash2: &[u8; HASHLEN]
-) -> usize {
-    let mut dist = 0;
-    for (bit1, bit2) in hash1.iter().zip(hash2) {
-        if bit1 != bit2 {
-            dist += 1;
-        }
-    }
-    dist
-}
-
-pub fn hamming_distance_hex_hash(
-    hash1: &[char; HASHLEN/4],
-    hash2: &[char; HASHLEN/4]
-) -> usize {
-    let mut hashdist = 0;
-    for (h1, h2) in hash1.iter().zip(hash2) {
-        let bin1 = hex_to_binary(&h1);
-        let bin2 = hex_to_binary(&h2);
-
-        match (bin1, bin2) {
-            (Some(b1), Some(b2)) => {
-                for (a, b) in b1.iter().zip(&b2) {
-                    if *a != *b { hashdist += 1; }
-                }
-            }
-            _ => {
-                eprintln!("ERROR: Either {:?} or {:?} don't contain only valid hexadecimal values.", bin1, bin2);
-                std::process::exit(1);
-            }
-        }
-    }
-    hashdist
-}
-
-
 pub fn hamming_distance(hash1: &Hash, hash2: &Hash) -> usize {
     let mut dist = 0;
     for (bit1, bit2) in hash1.binary256.iter().zip(&hash2.binary256) {
@@ -121,7 +83,7 @@ pub fn hex_to_binary(hex: &char) -> Option<[u8; 4]> {
 
 #[cfg(test)]
 mod hashmath_tests {
-    use crate::hashmath::*;
+    use super::*;
 
     fn create_testing_binary_hash() -> [u8; 256] {
         let hash = [
@@ -140,6 +102,18 @@ mod hashmath_tests {
     fn create_testing_hash_for_hamming_distance() -> Hash {
         let mut hash = Hash::new();
         hash.binary256 = create_testing_binary_hash();
+        hash
+    }
+
+    fn create_testing_hash_for_weighted_distance() -> Hash {
+        let mut hash = Hash::new();
+
+        for i in 0..HASHLEN {
+            hash.grayimage256[i] = i as u8;
+        }
+        hash.set_subarea_medians();
+        hash.set_binary_hash_from_grayimage();
+
         hash
     }
 
@@ -166,6 +140,49 @@ mod hashmath_tests {
 
     #[test]
     fn test_weighted_distance() {
-        // TODO: Implement
+        let hash1 = create_testing_hash_for_weighted_distance();
+        let mut hash2 = hash1.clone();
+
+        for i in 0..8 {
+            hash2.grayimage256[HASHLEN-1-i] = 0;
+        }
+        hash2.set_subarea_medians();
+        hash2.set_binary_hash_from_grayimage();
+
+        assert_eq!(hash1.subarea_medians[0][0], 64);
+        assert_eq!(hash1.subarea_medians[1][0], 72);
+        assert_eq!(hash1.subarea_medians[0][1], 192);
+        assert_eq!(hash1.subarea_medians[1][1], 200);
+
+        println!("{}", hash1.to_string());
+        println!("{}", hash2.to_string());
+
+        let hdist = hamming_distance(&hash1, &hash2);
+        assert_eq!(hdist, 16);
+
+        let wdist = weighted_distance(&hash1, &hash2);
+        let wdist_correct = 1000.0 * (hdist as f64) * (22552.0/16.0) / (328040.0/240.0); // This was calculated by using excel... >_>
+        assert_eq!(wdist, wdist_correct);
+    }
+
+    #[test]
+    fn test_hex_to_binary() {
+        assert_eq!(hex_to_binary(&'0'), Some([0, 0, 0, 0]));
+        assert_eq!(hex_to_binary(&'1'), Some([0, 0, 0, 1]));
+        assert_eq!(hex_to_binary(&'2'), Some([0, 0, 1, 0]));
+        assert_eq!(hex_to_binary(&'3'), Some([0, 0, 1, 1]));
+        assert_eq!(hex_to_binary(&'4'), Some([0, 1, 0, 0]));
+        assert_eq!(hex_to_binary(&'5'), Some([0, 1, 0, 1]));
+        assert_eq!(hex_to_binary(&'6'), Some([0, 1, 1, 0]));
+        assert_eq!(hex_to_binary(&'7'), Some([0, 1, 1, 1]));
+        assert_eq!(hex_to_binary(&'8'), Some([1, 0, 0, 0]));
+        assert_eq!(hex_to_binary(&'9'), Some([1, 0, 0, 1]));
+        assert_eq!(hex_to_binary(&'A'), Some([1, 0, 1, 0]));
+        assert_eq!(hex_to_binary(&'B'), Some([1, 0, 1, 1]));
+        assert_eq!(hex_to_binary(&'C'), Some([1, 1, 0, 0]));
+        assert_eq!(hex_to_binary(&'D'), Some([1, 1, 0, 1]));
+        assert_eq!(hex_to_binary(&'E'), Some([1, 1, 1, 0]));
+        assert_eq!(hex_to_binary(&'F'), Some([1, 1, 1, 1]));
+        assert_eq!(hex_to_binary(&'G'), None);
     }
 }
