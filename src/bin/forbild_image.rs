@@ -1,6 +1,7 @@
 use forbild_hashing::{editing, parse_args_to_paths};
 use forbild_hashing::editing::to_binary_image_by_quadrant;
 
+#[cfg(not(tarpaulin_include))]
 fn main() {
     let paths = parse_args_to_paths();
 

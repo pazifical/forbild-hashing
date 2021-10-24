@@ -2,6 +2,7 @@ use std::path::PathBuf;
 use std::time::Instant;
 use forbild_hashing::hash::Hash;
 
+#[cfg(not(tarpaulin_include))]
 fn main() {
     let n = 1000;
 

@@ -1,6 +1,7 @@
 use forbild_hashing::parse_args_to_paths;
 use forbild_hashing::hash::Hash;
 
+#[cfg(not(tarpaulin_include))]
 fn main() {
     let paths = parse_args_to_paths();
 

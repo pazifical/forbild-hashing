@@ -7,7 +7,18 @@ pub mod hash;
 pub const SIZE: u32 = 16;
 
 pub fn parse_args_to_paths() -> Vec<PathBuf> {
-    let args: Vec<String> = std::env::args().skip(1).collect();
+    let args = get_args();
+
+    let paths = parse_args(args);
+
+    paths
+}
+
+fn get_args() -> Vec<String> {
+    std::env::args().skip(1).collect()
+}
+
+fn parse_args(args: Vec<String>) -> Vec<PathBuf> {
     if args.len() == 0 {
         eprintln!("ERROR: No image paths were given. Exiting program.");
         std::process::exit(1);
@@ -25,4 +36,14 @@ pub fn parse_args_to_paths() -> Vec<PathBuf> {
         }
     }
     paths
+}
+
+#[cfg(test)]
+mod lib_testing {
+    use super::*;
+
+    #[test]
+    fn test_arg_parsing_success() {
+
+    }
 }

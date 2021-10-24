@@ -3,6 +3,7 @@ use image::DynamicImage;
 use image::imageops::FilterType;
 use forbild_hashing::editing::*;
 
+#[cfg(not(tarpaulin_include))]
 fn main() {
     println!("Running example...");
 

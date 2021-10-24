@@ -3,7 +3,7 @@ use std::time::Instant;
 use forbild_hashing::hashmath::*;
 use forbild_hashing::hash::Hash;
 
-
+#[cfg(not(tarpaulin_include))]
 fn main() {
     let extensions: Vec<String> = vec!["jpg", "JPG", "jpeg", "JPEG", "bmp", "BMP", "gif", "GIF", "png", "PNG"]
         .iter()

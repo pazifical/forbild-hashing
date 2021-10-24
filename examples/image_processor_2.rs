@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 use forbild_hashing::hash::Hash;
 
+#[cfg(not(tarpaulin_include))]
 fn main() {
     println!("Running example...");
 
