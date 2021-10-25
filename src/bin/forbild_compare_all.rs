@@ -34,6 +34,7 @@ fn main() {
     }
 
     // Creating hashes for all valid photos
+    // TODO: This is embarrassingly parallel! Implement multicore hash calculation
     println!("\nHashing all {} images...", paths.len());
     let now = Instant::now();
     let mut hashs = Vec::new();
@@ -45,6 +46,7 @@ fn main() {
     println!("Finished hashing after {} seconds.", elapsed_time.as_secs());
 
     // Comparing all hashes with each other
+    // TODO: This is embarrassingly parallel! Implement multicore hash comparison
     println!("\nComparing all hashes with each other. That means {} comparisons...", paths.len()*paths.len());
     let now = Instant::now();
     for i in 0..hashs.len() {
@@ -55,7 +57,7 @@ fn main() {
 
             let wdist = weighted_distance(&hashs[i], &hashs[j]);
 
-            println!("Hamming distance: {}\t\t\tWeighted distance: {}", hdist, wdist);
+            // println!("Hamming distance: {}\t\t\tWeighted distance: {}", hdist, wdist);
             // println!("{};{};{}",
             //          paths[i].to_str().unwrap(),
             //          paths[j].to_str().unwrap(),
